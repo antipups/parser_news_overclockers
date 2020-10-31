@@ -8,3 +8,15 @@ REQUEST_HEADERS = {
 }
 
 URL = 'https://overclockers.ru/lab?offset=-180&max=200'
+
+MAX_ARTICLES_ON_PAGE = 200
+
+RESULT_FILENAME = 'result.xlsx'
+COLUMN_SIZE = (150,
+               100,
+               20,
+               20)
+TITLE_COLUMNS = ('Ссылка',
+                 'Название',
+                 'Автор',
+                 'Дата создания')
