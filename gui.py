@@ -1,6 +1,8 @@
 import eel
 from util import *
 from excel import write_to_excel
+from os import startfile
+from database import add_to_db
 
 
 articles = []
@@ -18,18 +20,28 @@ def parse_one_page(url: str):
     else:
         global articles
         articles = get_contents_div(html_code=html_code)
+        add_to_db(articles)
         return convert_into_table(articles)
 
 
 @eel.expose     # вказуємо доступ з html
-def parse():
-    return parse_one_page('https://overclockers.ru/lab?offset=-180&max=200')
+def parse(url: str):
+    # url = 'https://overclockers.ru/lab?offset=-180&max=200'
+    return parse_one_page(url)
 
 
 @eel.expose     # вказуємо доступ з html
 def write_to_xlsx():
     global articles
-    write_to_excel(articles=articles)
+    if write_to_excel(articles=articles):
+        return "Дані успішно записані"
+    else:
+        return "Помилка запису, закрийте excel"
+
+
+@eel.expose
+def open_xlsx():
+    startfile(RESULT_FILENAME)
 
 
 if __name__ == '__main__':

@@ -8,17 +8,47 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div id="need_location" class="flex_class">
-        <button id="to_excel" style="margin-bottom: 5px" onclick="write_to_excel()">Записать данные в Excel</button>
+    <div id="need_location" class="flex_vertical">
+        <div class="flex_horizontal">
+            <input type="text" id="url" placeholder="Введите ссылку">
+            <div class="flex_horizontal">
+                <button id="open_excel" onclick="open_xlsx()" class="margin_for_row">Відкрити Excel</button>
+                <p id="label" class="margin_for_row"></p>
+                <button id="to_excel" onclick="write_to_excel()" class="margin_for_row">Записати дані в excel</button>
+            </div>
+        </div>
+        <table border="1px"></table>
     </div>
     <script type="text/javascript">
+        let loader = document.getElementById('loader')
         async function display_table() {
-            document.getElementById('need_location').innerHTML += await eel.parse()()
+            let result = await eel.parse(document.getElementById('url').value)()
+            if (result !== 'Немає доступу до сайту') {
+                document.querySelector('table').innerHTML = result
+                document.getElementById('to_excel').style.visibility = 'visible'
+                document.getElementById('open_excel').style.visibility = 'visible'
+            }
+            document.getElementById('url').addEventListener('keypress',  event => {
+                if (event.key === 'Enter') {
+                    display_table()
+                }
+            })
+            // console.log(loader.style.visibility)
+            // loader.style.visibility = 'hidden'
+            // loader.style.opacity = '0.0'
+            // console.log(loader.style.visibility)
         }
-        display_table()
+        document.getElementById('url').addEventListener('keypress',  event => {
+            if (event.key === 'Enter') {
+                display_table()
+            }
+        })
+        async function open_xlsx(){
+            await eel.open_xlsx()()
+        }
 
         async function write_to_excel() {
-            await eel.write_to_xlsx()()
+             document.getElementById('label').innerText = await eel.write_to_xlsx()()
         }
     </script>
 </body>

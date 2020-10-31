@@ -9,4 +9,4 @@ def parse_one_page(url: str):
 
 
 if __name__ == '__main__':
-    parse_one_page('https://overclockers.ru/lab?offset=-180&max=200')
+    parse_one_page('https://overclockers.ru/lab?offset=0&max=20')

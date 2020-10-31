@@ -1,8 +1,16 @@
 from typing import List
-
 from config import *
 from requests import get, Response
 import re
+
+
+def get_max_amount_articles(url: str) -> int:
+    """
+        отримуємо кількість статей на сайті
+    :param url:
+    :return:
+    """
+    return int(re.search(r'\d{0,5}$', url).group())
 
 
 def check_internet_access(url: str) -> str:
@@ -22,7 +30,13 @@ def check_internet_access(url: str) -> str:
             return ''
         else:
             html: str = request.text
-            return html
+            global MAX_ARTICLES_ON_PAGE
+            try:
+                MAX_ARTICLES_ON_PAGE = get_max_amount_articles(url)
+            except:
+                return ''
+            else:
+                return html
 
 
 def get_divs(html_code: str) -> tuple:
@@ -83,5 +97,5 @@ def convert_into_table(articles: list):
     """
     result = '<table border=1>'
     for article in articles:
-        result += f'<tr><td><a href="{article[0]}">' + '</td><td>'.join(article[1:]) + '</td></a></tr>'
+        result += f'<tr><td><a href="{article[0]}" target="_blank">' + '</td><td>'.join(article[1:]) + '</td></a></tr>'
     return result + '</table>'
