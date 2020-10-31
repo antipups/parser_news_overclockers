@@ -11,11 +11,11 @@ def setup_new_workbook() -> Workbook:
     :return:
     """
     workbook: Workbook = Workbook()
-    sheet = workbook.active
+    sheet = workbook.active 
     sheet.title = 'Статьи'
-    for index, column in enumerate(COLUMN_SIZE):
+    for index, column in enumerate(COLUMN_SIZE):     # регулюємо ширину колонок
         sheet.column_dimensions[chr(65 + index)].width = column
-    sheet.append(TITLE_COLUMNS)
+    sheet.append(TITLE_COLUMNS)     # додаємо назви колонок
     return workbook
 
 
@@ -27,7 +27,7 @@ def write_to_excel(articles: list) -> bool:
     """
     workbook: Workbook = setup_new_workbook()
     for article in articles:
-        workbook.active.append(article)
+        workbook.active.append(article)     # пишемо в об'єкт Ексель файлу по одній статті
     try:
         workbook.save(RESULT_FILENAME)
     except PermissionError:     # якщо файл використовується його не можна перезаписати

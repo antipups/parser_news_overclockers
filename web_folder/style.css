@@ -1,0 +1,5 @@
+/* для вертикального відображення (кнопка зверху потім таблицю) */
+div.flex_class {
+    display: flex;
+    flex-direction: column;
+}

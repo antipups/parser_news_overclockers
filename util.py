@@ -73,3 +73,15 @@ def get_contents_div(html_code: str) -> List[tuple]:
     for div in get_divs(html_code):
         articles_data.append(tuple(func(div.group()) for func in cut_funtions))
     return articles_data
+
+
+def convert_into_table(articles: list):
+    """
+        генерація таблиці для html
+    :param articles:
+    :return:
+    """
+    result = '<table border=1>'
+    for article in articles:
+        result += f'<tr><td><a href="{article[0]}">' + '</td><td>'.join(article[1:]) + '</td></a></tr>'
+    return result + '</table>'

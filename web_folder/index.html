@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Скрапер</title>
+    <script type="text/javascript" src="eel.js"></script>
+    <link rel="icon" type="image/png" href="./hqdefault.png">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="need_location" class="flex_class">
+        <button id="to_excel" style="margin-bottom: 5px" onclick="write_to_excel()">Записать данные в Excel</button>
+    </div>
+    <script type="text/javascript">
+        async function display_table() {
+            document.getElementById('need_location').innerHTML += await eel.parse()()
+        }
+        display_table()
+
+        async function write_to_excel() {
+            await eel.write_to_xlsx()()
+        }
+    </script>
+</body>
+</html>
