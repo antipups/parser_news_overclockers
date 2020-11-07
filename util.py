@@ -58,8 +58,14 @@ def get_url(html_code: str) -> str:
 
 
 def get_title(html_code: str) -> str:
-    return re.search(pattern=r'header\">[^<]*',
-                     string=html_code).group()[8:].strip()
+    title = re.search(pattern=r'header[^<]*',
+                      string=html_code)
+    if title:
+        string: str = re.search(pattern=r'header[^<]*',
+                                string=html_code).group()
+        return string[string.rfind('>') + 1:].strip()
+    else:
+        raise AttributeError
 
 
 def get_author(html_code: str) -> str:
@@ -72,6 +78,11 @@ def get_date(html_code: str) -> str:
                      string=html_code).group()[6:].strip()
 
 
+def get_category(html_code: str) -> str:
+    return re.search(pattern=r'item active[^<]*',
+                     string=html_code).group()[13:].strip()
+
+
 def get_contents_div(html_code: str) -> List[tuple]:
     """
         Отримуємо інформацію з потрібної сторінки, а саме
@@ -82,20 +93,30 @@ def get_contents_div(html_code: str) -> List[tuple]:
     :param html_code:
     :return:
     """
+    get_category(html_code=html_code)
     cut_funtions: tuple = (get_url, get_title, get_author, get_date)
     articles_data: list = []    # всі результати з статей будуть тут
     for div in get_divs(html_code):
-        articles_data.append(tuple(func(div.group()) for func in cut_funtions))
+        try:
+            articles_data.append(tuple(func(div.group()) for func in cut_funtions))
+        except Exception as e:
+            ...
     return articles_data
 
 
-def convert_into_table(articles: list):
+def convert_into_table(articles: list, category: str):
     """
         генерація таблиці для html
     :param articles:
     :return:
     """
     result = '<table border=1>'
+    result += '<tr><th>' + '</th><th>'.join(TITLE_COLUMNS[1:]) + '</th></tr>'
     for article in articles:
-        result += f'<tr><td><a href="{article[0]}" target="_blank">' + '</td><td>'.join(article[1:]) + '</td></a></tr>'
+        result += f'<tr><td><a href="{article[0]}" target="_blank">' + '</td><td>'.join(article[1:]) + f'</td><td>{category}</td></a></tr>'
     return result + '</table>'
+
+
+def check_url(url: str) -> bool:
+    return bool(re.search(pattern='&max=\d{1,5}',
+                          string=url))

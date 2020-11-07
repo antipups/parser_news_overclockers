@@ -1,3 +1,5 @@
+from datetime import datetime
+
 from openpyxl import Workbook, load_workbook
 from config import RESULT_FILENAME, COLUMN_SIZE, TITLE_COLUMNS, NEW_SHEET
 from os.path import exists
@@ -18,14 +20,14 @@ def setup_new_workbook() -> Workbook:
     else:
         workbook: Workbook = Workbook()
         sheet = workbook.active
-    sheet.title = 'Статьи'
+    sheet.title = datetime.now().strftime('%H.%M %d.%m.%Y')
     for index, column in enumerate(COLUMN_SIZE):     # регулюємо ширину колонок
         sheet.column_dimensions[chr(65 + index)].width = column
     sheet.append(TITLE_COLUMNS)     # додаємо назви колонок
     return workbook
 
 
-def write_to_excel(articles: list) -> bool:
+def write_to_excel(articles: list, category: str) -> bool:
     """
         запис даних статей в файл
     :param articles:
@@ -33,7 +35,7 @@ def write_to_excel(articles: list) -> bool:
     """
     workbook: Workbook = setup_new_workbook()
     for article in articles:
-        workbook.worksheets[-1].append(article)     # пишемо в об'єкт Ексель файлу по одній статті
+        workbook.worksheets[-1].append(article + (category, ))     # пишемо в об'єкт Ексель файлу по одній статті
     try:
         workbook.save(RESULT_FILENAME)
     except PermissionError:     # якщо файл використовується його не можна перезаписати

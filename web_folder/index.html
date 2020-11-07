@@ -10,7 +10,12 @@
 <body>
     <div id="need_location" class="flex_vertical">
         <div class="flex_horizontal">
-            <input type="text" id="url" placeholder="Введите ссылку">
+            <div class="flex_horizontal">
+                <input type="text" id="url" placeholder="Введіть посилання"/>
+                <input type="button" id="start_button" value="Старт парсингу веб-сторінки">
+                <input class="margin_for_row warning" id="warnings" value="Тест" style="visibility: hidden" readonly/>
+            </div>
+
             <div class="flex_horizontal">
                 <button id="open_excel" onclick="open_xlsx()" class="margin_for_row">Відкрити Excel</button>
                 <p id="label" class="margin_for_row"></p>
@@ -21,12 +26,19 @@
     </div>
     <script type="text/javascript">
         let loader = document.getElementById('loader')
+        let statements_string = document.getElementById('warnings')
         async function display_table() {
             let result = await eel.parse(document.getElementById('url').value)()
-            if (result !== 'Немає доступу до сайту') {
+
+            if (result !== 'Немає доступу до сайту' && result !== 'Посилання має містити в собі максиму статей') {
                 document.querySelector('table').innerHTML = result
                 document.getElementById('to_excel').style.visibility = 'visible'
                 document.getElementById('open_excel').style.visibility = 'visible'
+            }
+            else{
+                statements_string.value = result
+                statements_string.style.width = ((statements_string.value.length + 1) * 9) + 'px';
+                statements_string.style.visibility = 'visible'
             }
             document.getElementById('url').addEventListener('keypress',  event => {
                 if (event.key === 'Enter') {
@@ -42,6 +54,9 @@
             if (event.key === 'Enter') {
                 display_table()
             }
+        })
+        document.getElementById('start_button').addEventListener('click',  event => {
+            display_table()
         })
         async function open_xlsx(){
             await eel.open_xlsx()()
